@@ -1,0 +1,120 @@
+{
+  "shape": [
+    150000,
+    12
+  ],
+  "columns": [
+    "row_id",
+    "target",
+    "taxa_de_utilizacao_de_linhas_nao_garantidas",
+    "idade",
+    "numero_de_vezes30_59_dias_atraso_nao_pior",
+    "taxa_de_endividamento",
+    "renda_mensal",
+    "numero_de_linhas_de_credito_eemprestimos_abertos",
+    "numero_de_vezes90_dias_atraso",
+    "numero_de_emprestimos_ou_linhas_imobiliarias",
+    "numero_de_vezes60_89_dias_atraso_nao_pior",
+    "numero_de_dependentes"
+  ],
+  "dtypes": {
+    "row_id": "int64",
+    "target": "int64",
+    "taxa_de_utilizacao_de_linhas_nao_garantidas": "float64",
+    "idade": "int64",
+    "numero_de_vezes30_59_dias_atraso_nao_pior": "int64",
+    "taxa_de_endividamento": "float64",
+    "renda_mensal": "float64",
+    "numero_de_linhas_de_credito_eemprestimos_abertos": "int64",
+    "numero_de_vezes90_dias_atraso": "int64",
+    "numero_de_emprestimos_ou_linhas_imobiliarias": "int64",
+    "numero_de_vezes60_89_dias_atraso_nao_pior": "int64",
+    "numero_de_dependentes": "float64"
+  },
+  "missing_share": {
+    "renda_mensal": 0.19820666666666667,
+    "numero_de_dependentes": 0.02616,
+    "row_id": 0.0,
+    "target": 0.0,
+    "taxa_de_utilizacao_de_linhas_nao_garantidas": 0.0,
+    "idade": 0.0,
+    "numero_de_vezes30_59_dias_atraso_nao_pior": 0.0,
+    "taxa_de_endividamento": 0.0,
+    "numero_de_linhas_de_credito_eemprestimos_abertos": 0.0,
+    "numero_de_vezes90_dias_atraso": 0.0,
+    "numero_de_emprestimos_ou_linhas_imobiliarias": 0.0,
+    "numero_de_vezes60_89_dias_atraso_nao_pior": 0.0
+  },
+  "sample": [
+    {
+      "row_id": 0,
+      "target": 1,
+      "taxa_de_utilizacao_de_linhas_nao_garantidas": 0.766126609,
+      "idade": 45,
+      "numero_de_vezes30_59_dias_atraso_nao_pior": 2,
+      "taxa_de_endividamento": 0.802982129,
+      "renda_mensal": 9120.0,
+      "numero_de_linhas_de_credito_eemprestimos_abertos": 13,
+      "numero_de_vezes90_dias_atraso": 0,
+      "numero_de_emprestimos_ou_linhas_imobiliarias": 6,
+      "numero_de_vezes60_89_dias_atraso_nao_pior": 0,
+      "numero_de_dependentes": 2.0
+    },
+    {
+      "row_id": 1,
+      "target": 0,
+      "taxa_de_utilizacao_de_linhas_nao_garantidas": 0.957151019,
+      "idade": 40,
+      "numero_de_vezes30_59_dias_atraso_nao_pior": 0,
+      "taxa_de_endividamento": 0.121876201,
+      "renda_mensal": 2600.0,
+      "numero_de_linhas_de_credito_eemprestimos_abertos": 4,
+      "numero_de_vezes90_dias_atraso": 0,
+      "numero_de_emprestimos_ou_linhas_imobiliarias": 0,
+      "numero_de_vezes60_89_dias_atraso_nao_pior": 0,
+      "numero_de_dependentes": 1.0
+    },
+    {
+      "row_id": 2,
+      "target": 0,
+      "taxa_de_utilizacao_de_linhas_nao_garantidas": 0.65818014,
+      "idade": 38,
+      "numero_de_vezes30_59_dias_atraso_nao_pior": 1,
+      "taxa_de_endividamento": 0.085113375,
+      "renda_mensal": 3042.0,
+      "numero_de_linhas_de_credito_eemprestimos_abertos": 2,
+      "numero_de_vezes90_dias_atraso": 1,
+      "numero_de_emprestimos_ou_linhas_imobiliarias": 0,
+      "numero_de_vezes60_89_dias_atraso_nao_pior": 0,
+      "numero_de_dependentes": 0.0
+    },
+    {
+      "row_id": 3,
+      "target": 0,
+      "taxa_de_utilizacao_de_linhas_nao_garantidas": 0.233809776,
+      "idade": 30,
+      "numero_de_vezes30_59_dias_atraso_nao_pior": 0,
+      "taxa_de_endividamento": 0.036049682,
+      "renda_mensal": 3300.0,
+      "numero_de_linhas_de_credito_eemprestimos_abertos": 5,
+      "numero_de_vezes90_dias_atraso": 0,
+      "numero_de_emprestimos_ou_linhas_imobiliarias": 0,
+      "numero_de_vezes60_89_dias_atraso_nao_pior": 0,
+      "numero_de_dependentes": 0.0
+    },
+    {
+      "row_id": 4,
+      "target": 0,
+      "taxa_de_utilizacao_de_linhas_nao_garantidas": 0.9072394,
+      "idade": 49,
+      "numero_de_vezes30_59_dias_atraso_nao_pior": 1,
+      "taxa_de_endividamento": 0.024925695,
+      "renda_mensal": 63588.0,
+      "numero_de_linhas_de_credito_eemprestimos_abertos": 7,
+      "numero_de_vezes90_dias_atraso": 0,
+      "numero_de_emprestimos_ou_linhas_imobiliarias": 1,
+      "numero_de_vezes60_89_dias_atraso_nao_pior": 0,
+      "numero_de_dependentes": 0.0
+    }
+  ]
+}

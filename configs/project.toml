@@ -1,0 +1,26 @@
+[project]
+name = "MLflow Credit Risk"
+slug = "08_mlflow_credit_risk"
+family = "generic"
+problem_type = "binary_classification"
+business_goal = "Classificar risco de inadimplencia com rastreabilidade de experimentos e modelo candidato a producao."
+primary_metric = "ROC AUC, average precision, F1 e registro opcional no MLflow"
+
+[data]
+train_file = "data/raw/train.csv"
+test_file = "data/raw/test.csv"
+target = "target"
+positive_label = 1
+id_columns = ["row_id"]
+drop_columns = []
+
+[modeling]
+class_weight = "balanced"
+test_size = 0.2
+random_state = 42
+max_iter = 1000
+use_mlflow = true
+model_file = "models/model.joblib"
+
+[evaluation]
+top_k = [1000, 5000]

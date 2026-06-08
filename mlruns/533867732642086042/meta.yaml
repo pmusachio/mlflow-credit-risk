@@ -1,0 +1,8 @@
+artifact_location: file:///Users/pmusachio/REPOS/mlflow-credit-risk/mlruns/533867732642086042
+creation_time: 1778194553710
+experiment_id: '533867732642086042'
+last_update_time: 1778194553710
+lifecycle_stage: active
+name: 08_mlflow_credit_risk
+trace_location: null
+workspace: default
