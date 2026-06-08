@@ -1,15 +1,15 @@
-# Dados
+# Data
 
-Fonte Kaggle: [Give Me Some Credit](https://www.kaggle.com/competitions/GiveMeSomeCredit).
+Source: Kaggle [Give Me Some Credit](https://www.kaggle.com/competitions/GiveMeSomeCredit).
 
-Arquivos esperados nesta pasta:
+Files expected in this folder:
 
 - `train.csv`
 - `test.csv`
 
-- A competicao disponibiliza `cs-training.csv` e `cs-test.csv`; o script de preparo gera `train.csv` e `test.csv` no contrato do projeto.
+The competition ships `cs-training.csv` and `cs-test.csv`; the preparation script renames them into the `train.csv` / `test.csv` contract used by the project.
 
-## Download via Kaggle API
+## Download via the Kaggle API
 
 ```bash
 mkdir -p data/raw
@@ -17,10 +17,10 @@ kaggle competitions download -c GiveMeSomeCredit -p data/raw
 find data/raw -maxdepth 1 -name "*.zip" -exec unzip -q -o {} -d data/raw \;
 ```
 
-Ajuste de nomes esperado pelo projeto:
+Rename the files to match what the project expects:
 
 ```bash
 python scripts/prepare_give_me_some_credit.py
 ```
 
-Mantenha arquivos grandes fora do Git quando necessario e baixe-os novamente no Colab ou no ambiente local.
+Keep large files out of Git when possible and re-download them in Colab or the local environment as needed.

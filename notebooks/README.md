@@ -1,12 +1,12 @@
 # Notebooks
 
-Ordem sugerida para revisar e gerar screenshots do portfolio:
+Suggested order to review and capture portfolio screenshots:
 
-1. `00_business_understanding.ipynb`: problema, premissas e estrategia.
-2. `01_data_understanding.ipynb`: schema, nulos, amostra e qualidade dos dados.
-3. `02_exploratory_analysis.ipynb`: distribuicoes, hipoteses e graficos.
-4. `03_feature_engineering.ipynb`: transformacoes e atributos criados.
-5. `04_modeling_and_business_results.ipynb`: metricas, artefatos e leitura de negocio.
-6. `05_deployment_and_consumption.ipynb`: MLflow UI local, Tracking, API, alternativas de baixo custo e template SageMaker.
+1. `00_business_understanding.ipynb`: problem framing, assumptions, and analytical strategy.
+2. `01_data_understanding.ipynb`: schema, missing values, sample, and data quality.
+3. `02_exploratory_analysis.ipynb`: distributions, hypotheses, and storytelling charts.
+4. `03_feature_engineering.ipynb`: transformations and engineered features.
+5. `04_modeling_and_business_results.ipynb`: metrics, artifacts, and business read-out.
+6. `05_deployment_and_consumption.ipynb`: local MLflow UI, tracking, API, low-cost alternatives, and the SageMaker template.
 
-Os notebooks usam o mesmo codigo do pacote em `src/`, mantendo a narrativa visual alinhada ao pipeline reprodutivel.
+The notebooks reuse the same code as the `src/` package, keeping the visual narrative aligned with the reproducible pipeline.

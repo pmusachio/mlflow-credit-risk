@@ -3,8 +3,8 @@ name = "MLflow Credit Risk"
 slug = "08_mlflow_credit_risk"
 family = "generic"
 problem_type = "binary_classification"
-business_goal = "Classificar risco de inadimplencia com rastreabilidade de experimentos e modelo candidato a producao."
-primary_metric = "ROC AUC, average precision, F1 e registro opcional no MLflow"
+business_goal = "Classify default risk with reproducible experiment tracking and a production-candidate model."
+primary_metric = "ROC AUC, average precision, F1, and optional MLflow run logging"
 
 [data]
 train_file = "data/raw/train.csv"

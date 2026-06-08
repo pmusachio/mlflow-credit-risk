@@ -1,47 +1,47 @@
-# Entrega e consumo
+# Delivery and consumption
 
-O projeto foi estruturado para versionar experimentos, promover um modelo para Production e expor predicoes por API. SageMaker fica como opcao corporativa, mas nao e a opcao mais economica para portfolio.
+The project is structured to version experiments, promote a model to Production, and serve predictions through an API. SageMaker is documented as an enterprise option, but it is not the most cost-effective path for a portfolio demo.
 
-## Canais
+## Channels
 
-- **MLflow Tracking:** comparacao de runs, parametros e metricas.
-- **MLflow Model Registry:** promocao do melhor modelo para `Production`.
-- **FastAPI:** endpoint `/predict` para consumo local ou cloud.
-- **SageMaker:** `scripts/sagemaker_deployment_template.py` com configuracao base para deploy do modelo registrado.
-- **Alternativas de baixo custo:** DagsHub para tracking remoto, Render/Railway/Fly.io/Cloud Run/Hugging Face Spaces para publicar a API ou uma demo.
+- **MLflow Tracking:** compare runs, parameters, and metrics.
+- **MLflow Model Registry:** promote the best model to `Production`.
+- **FastAPI:** `/predict` endpoint for local or cloud consumption.
+- **SageMaker:** `scripts/sagemaker_deployment_template.py` with a base configuration to deploy the registered model.
+- **Lower-cost alternatives:** DagsHub for remote tracking, and Render/Railway/Fly.io/Cloud Run/Hugging Face Spaces to publish the API or a demo.
 
-## Como ver a interface do MLflow
+## Viewing the MLflow UI
 
-Use dois terminais a partir da raiz do projeto.
+Use two terminals from the project root.
 
-Terminal 1: iniciar a interface.
+Terminal 1: start the UI.
 
 ```bash
 python -m pip install -r requirements.txt -r requirements-mlflow.txt
 mlflow ui --backend-store-uri ./mlruns --host 127.0.0.1 --port 5000
 ```
 
-Abra no navegador:
+Open in the browser:
 
 ```text
 http://127.0.0.1:5000
 ```
 
-Terminal 2: gerar uma run rastreada.
+Terminal 2: generate a tracked run.
 
 ```bash
 PYTHONPATH=src python -m mlflow_credit_risk.cli train
 ```
 
-Na interface, selecione o experimento `08_mlflow_credit_risk`, abra a run mais recente e confira:
+In the UI, select the `08_mlflow_credit_risk` experiment, open the most recent run, and check:
 
-- **Parameters:** configuracoes do projeto, alvo e familia do problema.
-- **Metrics:** ROC AUC, average precision, F1 e demais metricas registradas.
-- **Artifacts:** arquivo `models/model.joblib` e artefatos do modelo sklearn.
+- **Parameters:** project configuration, target, and problem family.
+- **Metrics:** ROC AUC, average precision, F1, and other logged metrics.
+- **Artifacts:** the `models/model.joblib` file and the sklearn model artifacts.
 
-Se a run nao aparecer, confirme que o comando de treino foi executado na raiz do repositorio e que a UI esta apontando para `./mlruns`.
+If the run does not appear, confirm that the training command was executed from the repository root and that the UI is pointing at `./mlruns`.
 
-## API local
+## Local API
 
 ```bash
 python -m pip install -r requirements.txt -r requirements-api.txt
@@ -54,32 +54,32 @@ PYTHONPATH=src uvicorn mlflow_credit_risk.api:app --reload
 python scripts/sagemaker_deployment_template.py --model-uri models:/mlflow-credit-risk/Production
 ```
 
-O script roda em modo dry run por padrao. Use `--execute` somente depois de configurar credenciais AWS, role SageMaker e tracking URI.
+The script runs in dry-run mode by default. Use `--execute` only after configuring AWS credentials, a SageMaker role, and a tracking URI.
 
-## Alternativas mais baratas que AWS
+## Cheaper alternatives than AWS
 
-Para portfolio, a recomendacao pratica e separar tracking e inferencia:
+For a portfolio, the practical recommendation is to separate tracking from inference:
 
-- **Tracking local:** custo zero; rode `mlflow ui` localmente e mostre screenshots no README.
-- **DagsHub + MLflow:** bom para tracking remoto sem manter servidor proprio. Configure `MLFLOW_TRACKING_URI`, usuario e token do DagsHub, depois rode o mesmo comando de treino.
-- **Render:** simples para publicar a API FastAPI com plano gratuito/baixo custo, bom para demos que podem dormir quando ficam inativas.
-- **Railway:** bom para deploy rapido de API com variaveis de ambiente e logs simples.
-- **Fly.io:** bom quando voce quer Docker e maquina pequena com custo previsivel.
-- **Google Cloud Run:** bom para API com scale-to-zero e cobranca por uso.
-- **Hugging Face Spaces:** bom para demo publica, especialmente se transformar a API em app/demo Docker ou Streamlit.
+- **Local tracking:** zero cost; run `mlflow ui` locally and capture screenshots for the README.
+- **DagsHub + MLflow:** good for remote tracking without maintaining your own server. Set `MLFLOW_TRACKING_URI`, username, and DagsHub token, then run the same training command.
+- **Render:** simple way to publish the FastAPI service on a free/low-cost plan, good for demos that can sleep when idle.
+- **Railway:** good for quick API deployment with environment variables and simple logs.
+- **Fly.io:** good when you want Docker and a small machine with predictable cost.
+- **Google Cloud Run:** good for an API with scale-to-zero and pay-per-use billing.
+- **Hugging Face Spaces:** good for a public demo, especially if you turn the API into a Docker or Streamlit app.
 
-Recomendacao de custo para este projeto: mantenha a UI do MLflow local ou no DagsHub e publique apenas a API em Render, Cloud Run ou Fly.io. Use SageMaker somente se o objetivo for demonstrar deploy gerenciado em stack AWS.
+Cost recommendation for this project: keep the MLflow UI local or on DagsHub and publish only the API on Render, Cloud Run, or Fly.io. Use SageMaker only if the goal is to demonstrate a managed deployment on the AWS stack.
 
-Exemplo de tracking remoto com DagsHub:
+Example of remote tracking with DagsHub:
 
 ```bash
-export MLFLOW_TRACKING_URI="https://dagshub.com/<usuario>/<repositorio>.mlflow"
-export MLFLOW_TRACKING_USERNAME="<usuario>"
+export MLFLOW_TRACKING_URI="https://dagshub.com/<user>/<repository>.mlflow"
+export MLFLOW_TRACKING_USERNAME="<user>"
 export MLFLOW_TRACKING_PASSWORD="<token>"
 PYTHONPATH=src python -m mlflow_credit_risk.cli train
 ```
 
-Links uteis para checar planos atuais:
+Useful links to check current plans:
 
 - [MLflow Tracking UI](https://mlflow.org/docs/latest/ml/tracking/)
 - [DagsHub MLflow](https://dagshub.com/docs/integration_guide/mlflow_tracking/)

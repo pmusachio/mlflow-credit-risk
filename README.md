@@ -1,199 +1,309 @@
 # MLflow Credit Risk
 
-Projeto de ciencia de dados baseado no desafio/dataset Kaggle [Give Me Some Credit](https://www.kaggle.com/competitions/GiveMeSomeCredit).
+> **End-to-End Machine Learning Project** — Binary classification for credit default risk, with reproducible experiment tracking via MLflow.
+> Structured following the methodology from *Hands-On Machine Learning with Scikit-Learn and PyTorch* (Géron, 2025).
+
+[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
+[![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.4+-orange.svg)](https://scikit-learn.org/)
+[![MLflow](https://img.shields.io/badge/MLflow-2.12+-0194E2.svg)](https://mlflow.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-green.svg)](https://fastapi.tiangolo.com/)
+
+---
 
 ## 1. Business Problem
 
-Uma area de credito precisa classificar risco de inadimplencia com rastreabilidade de experimentos.
+A credit department needs to classify the risk of default on new loan applications and keep a fully traceable, auditable history of model experiments — so the business can always answer "which model is in production, and why".
 
-**Objetivo:** Classificar risco de inadimplencia com pipeline reprodutivel, metricas versionadas e opcao de tracking com MLflow.
+**Objective:** classify default risk with a reproducible pipeline, versioned metrics, and a model registry that supports promotion to production.
 
-**Metrica principal:** ROC AUC, average precision, F1 e registro opcional no MLflow
+**Primary metrics:** ROC AUC, average precision, F1, precision/lift at top-K, with optional MLflow run logging.
 
-## 2. Business Assumptions
+**Business assumptions:**
 
-- A decisao de credito exige metricas reproduziveis e historico de modelos.
-- Falsos negativos podem aumentar inadimplencia; falsos positivos podem reduzir aprovacao boa.
-- MLflow ajuda a comparar versoes de modelos e parametros.
+- Credit decisions require reproducible metrics and a model history.
+- False negatives (missed defaulters) increase losses; false positives (good customers rejected) reduce approved revenue.
+- MLflow makes it possible to compare model and parameter versions and to promote a challenger to `Production` with evidence.
 
-## 3. Solution Strategy
+---
 
-1. **Step 01. Data Description:** Validar schema, dimensoes, nulos, tipos e granularidade.
-2. **Step 02. Feature Engineering:** Criar variaveis orientadas ao dominio do desafio.
-3. **Step 03. Data Filtering:** Remover registros sem utilidade analitica ou com risco de vazamento.
-4. **Step 04. Exploratory Data Analysis:** Validar hipoteses e separar sinais relevantes de ruido.
-5. **Step 05. Data Preparation:** Imputar, escalar e codificar variaveis para modelagem.
-6. **Step 06. Feature Selection:** Separar IDs, alvo, variaveis de entrada e colunas descartadas.
-7. **Step 07. Machine Learning Modelling:** Treinar baseline reprodutivel e avaliar metricas tecnicas.
-8. **Step 08. Hyperparameter/Fit Strategy:** Reservar espaco para tuning, threshold e comparacao de modelos.
-9. **Step 09. Business Translation:** Converter metricas em decisao, priorizacao, risco, receita ou operacao.
-10. **Step 10. Delivery:** Versionar experimentos no MLflow, promover modelo para Production e documentar API/SageMaker.
+## 2. Solution Strategy
 
-## 4. Data Source
+Following the end-to-end ML project checklist from Géron's book:
 
-Fonte Kaggle: [Give Me Some Credit](https://www.kaggle.com/competitions/GiveMeSomeCredit).
+| Step | Notebook |
+|---|---|
+| 1. Frame the problem, assumptions, and success metric | `00_business_understanding` |
+| 2. Profile schema, missing values, and the project data contract | `01_data_understanding` |
+| 3. Validate hypotheses and chart the signal | `02_exploratory_analysis` |
+| 4. Engineer features and build the sklearn pipeline | `03_feature_engineering` |
+| 5. Train, evaluate, and translate metrics into a business read-out | `04_modeling_and_business_results` |
+| 6. Track experiments in MLflow, serve via API, document deployment | `05_deployment_and_consumption` |
 
-Arquivos esperados:
+---
 
-- `data/raw/train.csv`
-- `data/raw/test.csv`
+## 3. Project Structure
 
-- A competicao disponibiliza `cs-training.csv` e `cs-test.csv`; o script de preparo gera `train.csv` e `test.csv` no contrato do projeto.
+```
+mlflow-credit-risk/
+├── configs/
+│   └── project.toml              # Single source of truth: data, model, evaluation config
+├── data/
+│   ├── raw/                      # train.csv / test.csv (Kaggle, not committed)
+│   ├── interim/                  # Intermediate artifacts (auto-generated)
+│   └── processed/                # Batch prediction outputs
+├── docs/
+│   └── deployment.md             # Deployment notes (MLflow, API, SageMaker, low-cost alternatives)
+├── models/
+│   └── model.joblib              # Trained model (auto-generated)
+├── mlruns/                       # Local MLflow tracking store
+├── notebooks/
+│   ├── 00_business_understanding.ipynb
+│   ├── 01_data_understanding.ipynb
+│   ├── 02_exploratory_analysis.ipynb
+│   ├── 03_feature_engineering.ipynb
+│   ├── 04_modeling_and_business_results.ipynb
+│   └── 05_deployment_and_consumption.ipynb
+├── reports/
+│   ├── figures/                  # Plots generated by the notebooks
+│   ├── metrics.json              # Final model metrics
+│   └── data_profile.json         # Data profiling report
+├── scripts/
+│   ├── prepare_give_me_some_credit.py   # Renames Kaggle files into the project contract
+│   ├── sample_api_request.py            # Quick API test script
+│   └── sagemaker_deployment_template.py # Template for MLflow → SageMaker deployment
+├── src/mlflow_credit_risk/
+│   ├── api.py                    # FastAPI app
+│   ├── cli.py                    # Command-line interface (profile / train / predict)
+│   ├── config.py                 # Config loading helpers
+│   ├── data.py                   # Data loading + profiling utilities
+│   ├── features.py               # Feature engineering
+│   ├── models.py                 # Training, evaluation, prediction, MLflow logging
+│   └── analysis.py               # Business analysis helpers
+├── tests/
+│   └── test_project_contract.py
+├── Makefile
+├── requirements.txt
+├── requirements-mlflow.txt
+└── requirements-api.txt
+```
 
-## 5. Development Journey
+---
 
-Os notebooks foram organizados para mostrar a evolucao da analise, desde o entendimento do problema ate a traducao do resultado para negocio. Eles sao os melhores pontos para tirar screenshots do portfolio:
+## 4. Key Results
 
-- `notebooks/00_business_understanding.ipynb`
-- `notebooks/01_data_understanding.ipynb`
-- `notebooks/02_exploratory_analysis.ipynb`
-- `notebooks/03_feature_engineering.ipynb`
-- `notebooks/04_modeling_and_business_results.ipynb`
-- `notebooks/05_deployment_and_consumption.ipynb`
+Data profile reproduced in `reports/data_profile.json`: 150,000 rows and 12 columns analyzed.
 
-## 6. Top Data Insights and Hypotheses
+| Metric | Value |
+|---|---|
+| ROC AUC | 0.802 |
+| Average precision | 0.323 |
+| F1 | 0.286 |
+| Precision @ top 1,000 | 0.484 (lift ≈ 7.2×) |
+| Precision @ top 5,000 | 0.235 (lift ≈ 3.5×) |
 
-- Atrasos anteriores sao sinais fortes de risco futuro.
-- Taxa de utilizacao de credito e endividamento ajudam a separar perfis.
-- Renda mensal ausente precisa ser tratada sem descartar clientes.
+*(Full metrics in [`reports/metrics.json`](reports/metrics.json) — regenerate them anytime with `make train`.)*
 
-## 7. Model or Analysis Applied
+**Top data insights:**
 
-Classificacao binaria com pipeline sklearn e registro opcional no MLflow.
+- Past delinquencies are strong signals of future risk.
+- Credit utilization rate and debt ratio help separate customer profiles.
+- Missing monthly income must be handled without discarding customers.
 
-## 8. Performance and Business Results
+**Business translation:** the score supports credit policy with risk-based cutoffs (e.g. reviewing the top 1,000 riskiest applicants captures defaulters at ~7× the base rate) and an auditable trail of which model produced which decision.
 
-Perfil de dados reproduzido em `reports/data_profile.json`: 150000 linhas e 12 colunas analisadas.
+---
 
-Principais saidas do pipeline:
+## 5. How to Run — Quick Start for Recruiters
 
-- `reports/metrics.json`
-- `models/model.joblib`
-- `mlruns/`
+The project ships with a **single setup command** that takes a fresh clone all the way to a trained model — no manual environment juggling.
 
-## 9. Business Translation
+### Prerequisites
 
-O score apoia politica de credito com cortes por risco e trilha auditavel de experimentos.
+- Python 3.10+
+- The dataset in `data/raw/train.csv` and `data/raw/test.csv` (see [Dataset](#6-dataset) below)
 
-## 10. Repository Structure
+### Option A — One-command setup (recommended)
 
-- `configs/project.toml`: contrato do projeto, dados, alvo, metricas e parametros.
-- `src/mlflow_credit_risk/`: codigo Python modular para dados, features, modelagem, analise e consumo.
-- `notebooks/`: jornada analitica em notebooks.
-- `data/raw/`: arquivos baixados do Kaggle ou base analitica preparada.
-- `reports/`: metricas, perfis e resultados gerados pela execucao.
-- `docs/deployment.md`: notas objetivas de entrega e consumo.
-- `scripts/sagemaker_deployment_template.py`: template para deploy MLflow em SageMaker.
-- `models/`: modelo treinado quando aplicavel.
+```bash
+git clone https://github.com/<your-username>/mlflow-credit-risk.git
+cd mlflow-credit-risk
 
-## 11. Como executar no Google Colab
+# add train.csv / test.csv to data/raw/ first (see Dataset section)
 
-1. Abra um notebook novo no Google Colab.
-2. Gere seu token em Kaggle > Account > API > Create New Token.
-3. Rode as celulas abaixo.
+make setup
+```
 
-Clone o repositorio e instale as dependencias:
+`make setup` creates a virtual environment, installs every dependency group (core, MLflow, API), profiles the raw data, and trains the model — producing `models/model.joblib`, `reports/metrics.json`, and a tracked run in `./mlruns`.
+
+Then, in separate terminals:
+
+```bash
+source .venv/bin/activate
+
+make mlflow-ui     # MLflow tracking UI  → http://127.0.0.1:5000
+make api           # FastAPI /predict    → http://127.0.0.1:8000/docs
+python scripts/sample_api_request.py
+```
+
+### Option B — Manual local setup
+
+```bash
+git clone https://github.com/<your-username>/mlflow-credit-risk.git
+cd mlflow-credit-risk
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt -r requirements-mlflow.txt -r requirements-api.txt
+
+PYTHONPATH=src python -m mlflow_credit_risk.cli profile
+PYTHONPATH=src python -m mlflow_credit_risk.cli train
+PYTHONPATH=src uvicorn mlflow_credit_risk.api:app --reload
+```
+
+### Option C — Google Colab (no local setup)
 
 ```python
-REPO_URL = "https://github.com/<seu-usuario>/<nome-do-repositorio>.git"
+# Cell 1: clone and install
+REPO_URL = "https://github.com/<your-username>/mlflow-credit-risk.git"
 !git clone {REPO_URL} project
 %cd project
 !python -m pip install -q -r requirements.txt
-```
 
-Baixe ou prepare os dados:
-
-```python
+# Cell 2: bring the dataset in (upload kaggle.json first)
 from google.colab import files
-files.upload()  # envie o arquivo kaggle.json
-
-!mkdir -p ~/.kaggle
-!cp kaggle.json ~/.kaggle/kaggle.json
-!chmod 600 ~/.kaggle/kaggle.json
-!mkdir -p data/raw
-!python -m pip install -q kaggle
+files.upload()
+!mkdir -p ~/.kaggle && cp kaggle.json ~/.kaggle/ && chmod 600 ~/.kaggle/kaggle.json
+!mkdir -p data/raw && pip install -q kaggle
 !kaggle competitions download -c GiveMeSomeCredit -p data/raw
 !find data/raw -maxdepth 1 -name "*.zip" -exec unzip -q -o {} -d data/raw \;
 !python scripts/prepare_give_me_some_credit.py
-```
 
-Execute o fluxo principal:
-
-```python
+# Cell 3: run the pipeline
 !PYTHONPATH=src python -m mlflow_credit_risk.cli validate-config
 !PYTHONPATH=src python -m mlflow_credit_risk.cli profile
 !PYTHONPATH=src python -m mlflow_credit_risk.cli train
 ```
 
-## 12. Execucao local
+---
 
-Para rodar localmente em modo batch:
+## 6. Dataset
 
-```bash
-git clone <URL_DO_REPOSITORIO> project
-cd project
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements.txt
-PYTHONPATH=src python -m mlflow_credit_risk.cli profile
-PYTHONPATH=src python -m mlflow_credit_risk.cli train
-```
+**Source:** Kaggle [Give Me Some Credit](https://www.kaggle.com/competitions/GiveMeSomeCredit).
 
-### Execucao local para MLflow e API
-
-O treino basico roda no Colab. Use o ambiente local quando quiser acompanhar experimentos no MLflow UI ou manter a API online.
+The competition ships `cs-training.csv` and `cs-test.csv`. Download them into `data/raw/`, then run:
 
 ```bash
-git clone <URL_DO_REPOSITORIO> project
-cd project
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements.txt -r requirements-mlflow.txt -r requirements-api.txt
-mlflow ui --backend-store-uri ./mlruns --host 127.0.0.1 --port 5000
+python scripts/prepare_give_me_some_credit.py
 ```
 
-Em outro terminal:
+This renames the files into the `train.csv` / `test.csv` contract expected by `configs/project.toml`. See [`data/raw/README.md`](data/raw/README.md) for the full download walkthrough (including the Kaggle CLI commands).
+
+---
+
+## 7. Notebooks — Analytical Journey
+
+Run the notebooks in order for the full end-to-end walkthrough — they are also the best place to grab portfolio screenshots:
+
+| Notebook | Content |
+|---|---|
+| `00_business_understanding` | Problem framing, assumptions, success metric, solution strategy |
+| `01_data_understanding` | Schema, missing values, sample, project data contract |
+| `02_exploratory_analysis` | Hypotheses, distributions, storytelling charts |
+| `03_feature_engineering` | Raw vs. engineered features, transformation rationale |
+| `04_modeling_and_business_results` | Pipeline run, metrics read-out, business translation |
+| `05_deployment_and_consumption` | MLflow UI/Tracking, API, low-cost alternatives, SageMaker template |
 
 ```bash
-source .venv/bin/activate
-PYTHONPATH=src python -m mlflow_credit_risk.cli train
-PYTHONPATH=src uvicorn mlflow_credit_risk.api:app --reload
-PYTHONPATH=src python scripts/sample_api_request.py
+jupyter lab notebooks/
 ```
 
-Abra a interface em `http://127.0.0.1:5000`. Dentro do MLflow, selecione o experimento `08_mlflow_credit_risk`, abra a run mais recente e confira parametros, metricas e artefatos do modelo.
+---
 
-### SageMaker
+## 8. MLflow Tracking & Model Registry
 
-Depois de registrar o melhor modelo no MLflow e promover para `Production`, gere a configuracao de deploy:
+- **Tracking:** every `make train` run is logged to `./mlruns` under the `08_mlflow_credit_risk` experiment (parameters, metrics, and model artifacts).
+- **Registry:** promote the best run to `Production` to make it the candidate for deployment — `models:/mlflow-credit-risk/Production`.
+- **Remote tracking:** point `MLFLOW_TRACKING_URI` at DagsHub (or any MLflow-compatible backend) to track experiments without hosting your own server. See [`docs/deployment.md`](docs/deployment.md).
+
+---
+
+## 9. API Reference
+
+**Start the API:** `make api`
+
+| Endpoint | Method | Description |
+|---|---|---|
+| `/health` | GET | Health check |
+| `/predict` | POST | Returns predicted class and risk score for each record |
 
 ```bash
-python scripts/sagemaker_deployment_template.py --model-uri models:/mlflow-credit-risk/Production
+python scripts/sample_api_request.py
 ```
 
-O script fica em modo dry run por padrao para evitar criacao acidental de infraestrutura. Use `--execute` apenas com credenciais AWS, role SageMaker e tracking URI configurados.
+---
 
-### Alternativas mais baratas que AWS
+## 10. Make Commands
 
-Para portfolio, a opcao mais economica e manter o MLflow local ou em DagsHub e publicar apenas a API FastAPI:
+```bash
+make setup       # One-shot: venv + install + profile + train (recommended for first run)
+make install     # Install core Python dependencies only
+make profile     # Generate reports/data_profile.json
+make train       # Train model → models/model.joblib + reports/metrics.json + MLflow run
+make analyze     # Run the business analysis routine
+make api         # Start FastAPI at http://127.0.0.1:8000
+make mlflow-ui   # Start the MLflow tracking UI at http://127.0.0.1:5000
+make test        # Run the test suite
+```
 
-- **DagsHub:** tracking remoto para runs do MLflow sem manter servidor proprio.
-- **Render, Railway ou Fly.io:** deploy simples da API com custo baixo para demo.
-- **Google Cloud Run:** API com scale-to-zero e cobranca por uso.
-- **Hugging Face Spaces:** demo publica usando Docker ou app visual.
+---
 
-Minha recomendacao para este projeto: MLflow local/DagsHub para evidenciar experimentos e Render ou Cloud Run para expor `/predict`. SageMaker fica como alternativa enterprise, nao como caminho padrao de menor custo.
+## 11. Deployment
 
-Veja os detalhes em `docs/deployment.md`.
+Deployment paths are documented in detail in [`docs/deployment.md`](docs/deployment.md):
 
-## 13. Next Steps to Improve
+- **MLflow Tracking + Model Registry** for experiment comparison and production promotion.
+- **FastAPI** for serving `/predict` locally or in the cloud.
+- **SageMaker** (`scripts/sagemaker_deployment_template.py`) as an enterprise-grade option — runs in dry-run mode by default.
+- **Low-cost alternatives for a portfolio:** local MLflow or DagsHub for tracking, plus Render, Railway, Fly.io, Google Cloud Run, or Hugging Face Spaces to publish the API/demo.
 
-- Adicionar matriz de decisao por faixas de score.
-- Comparar modelos com tracking no MLflow UI.
-- Criar validacao temporal para simular safras de credito.
+My recommendation for this project: keep MLflow local/DagsHub to evidence experiment tracking, and expose `/predict` through Render or Cloud Run. SageMaker remains documented as the enterprise alternative, not the default low-cost path.
+
+---
+
+## 12. Tech Stack
+
+| Layer | Tools |
+|---|---|
+| Data manipulation | pandas, numpy |
+| ML | scikit-learn (Pipeline, ColumnTransformer) |
+| Experiment tracking | MLflow (Tracking + Model Registry) |
+| Visualisation | matplotlib, seaborn |
+| API | FastAPI, Pydantic, Uvicorn |
+| Serialisation | joblib |
+| Configuration | TOML (tomllib / tomli) |
+| Testing | pytest |
+| Managed deployment | Amazon SageMaker (template, dry-run by default) |
+
+---
+
+## 13. Next Steps
+
+- [ ] Add a decision matrix by score band.
+- [ ] Compare models with MLflow UI tracking and promote the best challenger.
+- [ ] Build temporal validation to simulate credit vintages.
+- [ ] Add SHAP-based explainability per prediction.
+- [ ] Containerise the API for zero-friction cloud deployment.
+
+---
 
 ## 14. Tests
 
 ```bash
 python -m pytest
 ```
+
+---
+
+## References
+
+- Géron, A. (2025). *Hands-On Machine Learning with Scikit-Learn and PyTorch* (3rd ed.). O'Reilly Media.
+- Dataset: [Give Me Some Credit](https://www.kaggle.com/competitions/GiveMeSomeCredit). Kaggle.
