@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0",
+  "trained_at": "2026-06-14T14:31:37+00:00",
+  "dataset": "competitions/GiveMeSomeCredit",
+  "data_sha256": "182ea5b402b9d38b99298c7dbd97f179890a469739ad4cbf8638ff04e03c0dec",
+  "target": "target",
+  "problem": "credit default risk ranking (imbalanced binary classification)",
+  "best_model": "hist_gb",
+  "best_params": {
+    "clf__max_leaf_nodes": 127,
+    "clf__max_iter": 400,
+    "clf__max_depth": 4,
+    "clf__learning_rate": 0.04151278002752295,
+    "clf__l2_regularization": 10.0
+  },
+  "cv_selection": [
+    {
+      "model": "hist_gb",
+      "ap_mean": 0.39052788638452596,
+      "ap_std": 0.006644110874652889
+    },
+    {
+      "model": "logreg",
+      "ap_mean": 0.2924640016941602,
+      "ap_std": 0.004031000797228262
+    }
+  ],
+  "baseline": {
+    "model": "LogisticRegression (balanced)",
+    "roc_auc": 0.8022469812252722,
+    "average_precision": 0.32311829404444503
+  },
+  "holdout": {
+    "roc_auc": 0.8698613263234128,
+    "average_precision": 0.40777052367864813,
+    "base_rate": 0.0668,
+    "capacities": {
+      "1000": {
+        "precision_at_k": 0.549,
+        "lift_at_k": 8.214,
+        "defaulters_captured_pct": 27.4
+      },
+      "5000": {
+        "precision_at_k": 0.2752,
+        "lift_at_k": 4.117,
+        "defaulters_captured_pct": 68.6
+      },
+      "10000": {
+        "precision_at_k": 0.1722,
+        "lift_at_k": 2.576,
+        "defaulters_captured_pct": 85.9
+      }
+    },
+    "roc_auc_by_slice": {
+      "PastDue90>0": 0.7038,
+      "PastDue90=0": 0.8343
+    }
+  },
+  "business": {
+    "headline": "Reviewing the 5,000 highest-risk applicants flags 68.6% of future defaulters, 4.117x more efficient than random review.",
+    "lift_at_5000": 4.117,
+    "defaulters_captured_pct_at_5000": 68.6
+  },
+  "top_features": [
+    {
+      "feature": "PastDue90",
+      "importance": 0.12387
+    },
+    {
+      "feature": "RevolvingUtilization",
+      "importance": 0.07393
+    },
+    {
+      "feature": "PastDue30_59",
+      "importance": 0.04434
+    },
+    {
+      "feature": "PastDue60_89",
+      "importance": 0.03849
+    },
+    {
+      "feature": "DebtRatio",
+      "importance": 0.01321
+    },
+    {
+      "feature": "Age",
+      "importance": 0.01171
+    },
+    {
+      "feature": "OpenCreditLines",
+      "importance": 0.00705
+    },
+    {
+      "feature": "MonthlyIncome",
+      "importance": 0.00444
+    }
+  ]
+}
